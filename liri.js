@@ -1,98 +1,78 @@
-//hide my keys in .env
-require("dotenv").config();
-var keys = require("./keys.js"); //retrieves the keys.js folder
+require("dotenv").config(); //hide my keys in .env
+var keys = require("./keys.js"); //retrieves the keys.js file
 var fs = require("fs");
 var request = require("request");
-// var liriInput = process.argv[2];
-// var movieName = process.argv[3];
+var liriInput = process.argv[2]; //user chooses which function to run API
+var movieName = process.argv.slice(3).join(" "); //user chooses input for the function
 var Spotify = require('node-spotify-api'); //spotify package
-// var spotify = new spotify(keys.spotify); //pass through
+var spotify = new Spotify(keys.spotify); //pass through
 
-var spotifyID = process.env.SPOTIFY_ID;
-var spotifySecret = process.env.SPOTIFY_SECRET;
-
-console.log("----------------------------------")
-// console.log("ID: ", spotifyID);
-// console.log("SECRET: ", spotifySecret);
-// console.log("----------------------------------")
-
-var movieName = process.argv[2];
-
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-console.log(queryUrl);
-
-request(queryUrl, function (error, response, body) {
-	if (!error && response.statusCode === 200) {
-		var myMovieData = JSON.parse(body);
-		var queryUrlResults =
-			"Title: " + myMovieData.Title + "\n" +
-			"Year: " + myMovieData.Year + "\n" +
-			"IMBD Rating: " + myMovieData.imdbRating + "\n" +
-			"Rotton Tomatos Rating: " + myMovieData.Ratings[0].Value + "\n" +
-			"Country Produced: " + myMovieData.Country + "\n"
-		console.log(queryUrlResults);
-	}
-	else {
-		console.log("I GOT NOTHING!");
-	}
-});
+switch (liriInput) {
+	case "movie-this":
+		movieThis();
+		break;
+	case "concert-this":
+		concertThis();
+		break;
+	case "spotify-this-song":
+		spotifyThis();
+		break;
+	case "do-what-it-says":
+		doThis();
+		break;
+}
 
 
-// function movieThis() {
-// 	request(queryUrl, function (error, response, body) {
-// 		if (!error && response.statusCode === 200) {
-// 			var myMovieData = JSON.parse(body); 
-// 			var queryUrlResults = 
-// 				"Title: " + myMovieData.Title + "\n" +
-// 				"Year: " + myMovieData.Year + "\n" +
-// 				"IMBD Rating: " + myMovieData.Ratings[0].Value + "\n" +
-// 				"Rotton Tomatos Rating: " + myMovieData.Ratings[1].Value + "\n" +
-// 				"Country Produced: " + myMovieData.Country + "\n"
-// 			console.log(queryUrlResults);
-// 		}
-// 		else {
-// 			console.log("I GOT NOTHING!");
-// 		}
-// 	})
-// }
+//////////////////////////////// movie-this function //////////////////////////////
+function movieThis() {
+	var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+	console.log(queryUrl);
 
-//////// movie-this ////////////
-// title 
-// year it came out
-// IMDB rating
-// rotten tomatoes rating of the movie
-// country movie produced
-// language of movie
-// plot of the movie
-// actors
+	request(queryUrl, function (err, response, body) {
+		if (!err && response.statusCode === 200) {
+			console.log("----------------------------------")
+			var myMovieData = JSON.parse(body);
+			var queryUrlResults =
+				"Title: " + myMovieData.Title + "\n" +
+				"Year: " + myMovieData.Year + "\n" +
+				"IMBD Rating: " + myMovieData.imdbRating + "\n" +
+				"Rotton Tomatos Rating: " + myMovieData.Ratings[0].Value + "\n" +
+				"Country Produced: " + myMovieData.Country + "\n" +
+				"Movie Language: " + myMovieData.Language + "\n" +
+				"Plot of Movie: " + myMovieData.Plot + "\n" +
+				"Actors: " + myMovieData.Actors;
+			console.log(queryUrlResults);
+			console.log("----------------------------------")
+		}
+		else {
+			console.log("I GOT NOTHING!");
+		}
+	})
+}
 
-// function spotify(artist) {
-// 	console.log("YOU GOT IT");
-// 	this.artist = artist;
-// };
+///////////////////////////////// spotify-this-song ////////////////////////////////
 
-// var spotify = new Spotify({
-// 	id: "7ff9284754fe41dcb6f74357f66f92dd",
-// 	secret: "847fafeec5264410984122e2008602f4",
-// });
+function spotifyThis() {
+	// var songName = process.argv.slice(2).join(" ");
 
-// spotify
-//   .request('https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx')
-//   .then(function(data) {
-//     // console.log(data); 
-//   })
-//   .catch(function(err) {
-//     console.error('Error occurred: ' + err); 
-//   });
-// spotify
-// 	.request('https://api.spotify.com/v1/artists/7ff9284754fe41dcb6f74357f66f92dd')
-// 	.then(function (data) {
-// 		console.log(data);
-// 	})
-// 	.catch(function (err) {
-// 		console.error('Error occurred: ' + err);
-// 	});
+	spotify.search({ type: 'track', query: movieName, limit: 5 })
+		.then(function (response) {
+			// var song = JSON.stringify(response, null, 1);
+			var song = response.tracks.items[0].album.artists[0];
 
+			console.log("------------------------------------------------------")
+			var songItems =
+				"Artist Name: " + song.name + "\n" +
+				"Song Name: " + movieName + "\n" +
+				"Link of the Song: " + song.external_urls.spotify + "\n" +
+				"Album: " + song.album_type;
+			console.log(songItems);
+			console.log("------------------------------------------------------")
+		})
+	// .catch(function (err) {
+	// 	console.log(err);
+	// });
+};
 
 ///////// spotify-this-song ///////////
 // Artists
@@ -108,23 +88,5 @@ request(queryUrl, function (error, response, body) {
 
 ////////// do-what-it-says ///////////
 
-
-// function spotify(keys) {
-// 	console.log(keys);
-// }
-
-
-
-// var follow = Spotify(spotify);
-
-// follow.find({ type: 'track', query: 'work', limit: 5 })
-// 	.then(function (response) {
-// 		console.log("------------------------------------------------")
-// 		console.log(response);
-// 		console.log("------------------------------------------------")
-// 	})
-// 	.catch(function (err) {
-// 		console.log(err);
-// 	});
 
 
