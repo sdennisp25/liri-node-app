@@ -2,8 +2,9 @@ require("dotenv").config(); //hide my keys in .env
 var keys = require("./keys.js"); //retrieves the keys.js file
 var fs = require("fs");
 var request = require("request");
+var moment = require("moment");
 var liriInput = process.argv[2]; //user chooses which function to run API
-var movieName = process.argv.slice(3).join(" "); //user chooses input for the function
+var userSearch = process.argv.slice(3).join(" "); //user chooses input for the function
 var Spotify = require('node-spotify-api'); //spotify package
 var spotify = new Spotify(keys.spotify); //pass through
 
@@ -22,16 +23,37 @@ switch (liriInput) {
 		break;
 }
 
+////////////////////////////// concert-this ////////////////////////////////////
+
+function concertThis() {
+	var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "/events?app_id=codingbootcamp"
+
+	request(queryUrl, function (err, response, data) {
+		console.log(JSON.parse(data, null, 1));
+
+		for (var i = 0; i < 10; i++) {
+			var someData = JSON.parse(data, null, 1)[i];
+			// console.log("VALUE: ", someData); //saved for some troubleshooting
+			console.log("--------------------------------------------")
+			console.log("Venue Name: ", someData.venue.name);
+			console.log("venue Location: ", someData.venue.city);
+			console.log("Date of Event: ", someData.datetime);
+			console.log("Date of Event: ", moment(someData.datetime).format("MM/DD/YYYY hh:mm A"))
+		}
+	})
+
+}
 
 //////////////////////////////// movie-this function //////////////////////////////
 function movieThis() {
-	var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+	var queryUrl = "http://www.omdbapi.com/?t=" + userSearch + "&y=&plot=short&apikey=trilogy";
 	console.log(queryUrl);
 
 	request(queryUrl, function (err, response, body) {
 		if (!err && response.statusCode === 200) {
 			console.log("----------------------------------")
 			var myMovieData = JSON.parse(body);
+			console.log(myMovieData);
 			var queryUrlResults =
 				"Title: " + myMovieData.Title + "\n" +
 				"Year: " + myMovieData.Year + "\n" +
@@ -53,40 +75,43 @@ function movieThis() {
 ///////////////////////////////// spotify-this-song ////////////////////////////////
 
 function spotifyThis() {
-	// var songName = process.argv.slice(2).join(" ");
-
-	spotify.search({ type: 'track', query: movieName, limit: 5 })
-		.then(function (response) {
-			// var song = JSON.stringify(response, null, 1);
-			var song = response.tracks.items[0].album.artists[0];
-
+	spotify.search({ type: 'track', query: userSearch }, function (err, data) {
+		if (err) {
+			console.log('Error occurred: ' + err);
+			return;
+		}
+		var songTrack = data.tracks.items;
+		for (i = 0; i < songTrack.length; i++) {
 			console.log("------------------------------------------------------")
 			var songItems =
-				"Artist Name: " + song.name + "\n" +
-				"Song Name: " + movieName + "\n" +
-				"Link of the Song: " + song.external_urls.spotify + "\n" +
-				"Album: " + song.album_type;
+				"Artist Name: " + songTrack[i].artists[i].name + "\n" +
+				"Song Name: " + songTrack[i].name + "\n" +
+				"Link of the Song: " + songTrack[i].preview_url + "\n" +
+				"Album: " + songTrack[i].album.name;
 			console.log(songItems);
-			console.log("------------------------------------------------------")
-		})
-	// .catch(function (err) {
-	// 	console.log(err);
-	// });
+		}
+	})
 };
 
-///////// spotify-this-song ///////////
-// Artists
-// Song Name
-// link of song
-// album song is from
 
-///////// concert-this ///////////
-// Name of the venue
-// Venue location
-// date of the event in (MM/DD/YYYY)
+function doThis() {
+	fs.readFile("random.txt", "utf8", function (error, data) {
+		if (error) {
+			return console.log(error);
+		}
+		var dataArr = data.split(",");
+		var input1 = dataArr[0]; //spotify-this-song
+		var input2 = dataArr[1]; //I want it that way
 
 
-////////// do-what-it-says ///////////
+		// need to someohow convert the random.txt file for the spotify function to take
+
+		// spotifyThis(input1, input2);
+
+		// console.log(dataArr);
+	})
+}
+
 
 
 
