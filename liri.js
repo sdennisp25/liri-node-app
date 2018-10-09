@@ -1,39 +1,40 @@
 require("dotenv").config(); //hide my keys in .env
 var keys = require("./keys.js"); //retrieves the keys.js file
 var fs = require("fs");
-var request = require("request");
-var moment = require("moment");
+var request = require("request"); //used to pull the url
+var moment = require("moment"); // convert my date/time for concert-this
 var liriInput = process.argv[2]; //user chooses which function to run API
 var userSearch = process.argv.slice(3).join(" "); //user chooses input for the function
 var Spotify = require('node-spotify-api'); //spotify package
 var spotify = new Spotify(keys.spotify); //pass through
 
+// will be listening for which specific case to run the function
 switch (liriInput) {
 	case "movie-this":
-		movieThis();
+		movieThis(userSearch);
 		break;
 	case "concert-this":
-		concertThis();
+		concertThis(userSearch);
 		break;
 	case "spotify-this-song":
-		spotifyThis();
+		spotifyThis(userSearch);
 		break;
 	case "do-what-it-says":
-		doThis();
+		doThis(userSearch);
 		break;
 }
 
 ////////////////////////////// concert-this ////////////////////////////////////
 
-function concertThis() {
-	var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "/events?app_id=codingbootcamp"
+function concertThis(bandToSearch) {
+	var queryUrl = "https://rest.bandsintown.com/artists/" + bandToSearch + "/events?app_id=codingbootcamp"
 
 	request(queryUrl, function (err, response, data) {
 		console.log(JSON.parse(data, null, 1));
 
 		for (var i = 0; i < 10; i++) {
 			var someData = JSON.parse(data, null, 1)[i];
-			// console.log("VALUE: ", someData); //saved for some troubleshooting
+			// console.log("VALUE: ", someData); //saved for troubleshooting
 			console.log("--------------------------------------------")
 			console.log("Venue Name: ", someData.venue.name);
 			console.log("venue Location: ", someData.venue.city);
@@ -45,15 +46,14 @@ function concertThis() {
 }
 
 //////////////////////////////// movie-this function //////////////////////////////
-function movieThis() {
-	var queryUrl = "http://www.omdbapi.com/?t=" + userSearch + "&y=&plot=short&apikey=trilogy";
-	console.log(queryUrl);
+function movieThis(movieToSearch) {
+	var queryUrl = "http://www.omdbapi.com/?t=" + movieToSearch + "&y=&plot=short&apikey=trilogy";
 
 	request(queryUrl, function (err, response, body) {
 		if (!err && response.statusCode === 200) {
 			console.log("----------------------------------")
 			var myMovieData = JSON.parse(body);
-			console.log(myMovieData);
+			// console.log(myMovieData); //saved for troubleshooting
 			var queryUrlResults =
 				"Title: " + myMovieData.Title + "\n" +
 				"Year: " + myMovieData.Year + "\n" +
@@ -74,41 +74,39 @@ function movieThis() {
 
 ///////////////////////////////// spotify-this-song ////////////////////////////////
 
-function spotifyThis() {
-	spotify.search({ type: 'track', query: userSearch }, function (err, data) {
-		if (err) {
+function spotifyThis(songToSearch) {
+	spotify.search({ type: 'track', query: songToSearch }, function (err, data) {
+		if (!err) {
+			var songTrack = data.tracks.items;
+			// console.log(songTrack) //saved for troubleshooting
+			for (i = 0; i < 3; i++) {
+				console.log("------------------------------------------------------")
+				var songItems =
+					"Artist Name: " + songTrack[i].artists[i].name + "\n" +
+					"Song Name: " + songTrack[i].name + "\n" +
+					"Link of the Song: " + songTrack[i].preview_url + "\n" +
+					"Album: " + songTrack[i].album.name;
+				console.log(songItems);
+			}
+		}
+		else {
 			console.log('Error occurred: ' + err);
 			return;
-		}
-		var songTrack = data.tracks.items;
-		for (i = 0; i < songTrack.length; i++) {
-			console.log("------------------------------------------------------")
-			var songItems =
-				"Artist Name: " + songTrack[i].artists[i].name + "\n" +
-				"Song Name: " + songTrack[i].name + "\n" +
-				"Link of the Song: " + songTrack[i].preview_url + "\n" +
-				"Album: " + songTrack[i].album.name;
-			console.log(songItems);
 		}
 	})
 };
 
+///////////////////////////////// do-what-it-says /////////////////////////////////
 
-function doThis() {
+function doThis(doWhatItSays) {
 	fs.readFile("random.txt", "utf8", function (error, data) {
 		if (error) {
 			return console.log(error);
 		}
 		var dataArr = data.split(",");
-		var input1 = dataArr[0]; //spotify-this-song
-		var input2 = dataArr[1]; //I want it that way
+		var input2 = dataArr[1]; //I want it that way from random.txt file
 
-
-		// need to someohow convert the random.txt file for the spotify function to take
-
-		// spotifyThis(input1, input2);
-
-		// console.log(dataArr);
+		spotifyThis(input2);
 	})
 }
 
