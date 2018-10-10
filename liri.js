@@ -35,11 +35,13 @@ function concertThis(bandToSearch) {
 		for (var i = 0; i < 10; i++) {
 			var someData = JSON.parse(data, null, 1)[i];
 			// console.log("VALUE: ", someData); //saved for troubleshooting
-			console.log("--------------------------------------------")
+			console.log("------------------------------------------------------")
 			console.log("Venue Name: ", someData.venue.name);
 			console.log("venue Location: ", someData.venue.city);
 			console.log("Date of Event: ", someData.datetime);
 			console.log("Date of Event: ", moment(someData.datetime).format("MM/DD/YYYY hh:mm A"))
+			console.log("------------------------------------------------------")
+
 		}
 	})
 
@@ -51,9 +53,9 @@ function movieThis(movieToSearch) {
 
 	request(queryUrl, function (err, response, body) {
 		if (!err && response.statusCode === 200) {
-			console.log("----------------------------------")
 			var myMovieData = JSON.parse(body);
 			// console.log(myMovieData); //saved for troubleshooting
+			console.log("------------------------------------------------------")
 			var queryUrlResults =
 				"Title: " + myMovieData.Title + "\n" +
 				"Year: " + myMovieData.Year + "\n" +
@@ -64,10 +66,7 @@ function movieThis(movieToSearch) {
 				"Plot of Movie: " + myMovieData.Plot + "\n" +
 				"Actors: " + myMovieData.Actors;
 			console.log(queryUrlResults);
-			console.log("----------------------------------")
-		}
-		else {
-			console.log("I GOT NOTHING!");
+			console.log("------------------------------------------------------")
 		}
 	})
 }
@@ -79,8 +78,8 @@ function spotifyThis(songToSearch) {
 		if (!err) {
 			var songTrack = data.tracks.items;
 			// console.log(songTrack) //saved for troubleshooting
-			for (i = 0; i < 3; i++) {
-				console.log("------------------------------------------------------")
+			for (i = 0; i < 10; i++) {
+				console.log("-----------------------------------------------------")
 				var songItems =
 					"Artist Name: " + songTrack[i].artists[i].name + "\n" +
 					"Song Name: " + songTrack[i].name + "\n" +
@@ -88,10 +87,6 @@ function spotifyThis(songToSearch) {
 					"Album: " + songTrack[i].album.name;
 				console.log(songItems);
 			}
-		}
-		else {
-			console.log('Error occurred: ' + err);
-			return;
 		}
 	})
 };
