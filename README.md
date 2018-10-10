@@ -9,7 +9,7 @@
 
 # Concert
 
-'node liri.js concert-this [insert musician]'
+`node liri.js concert-this [insert musician]`
 
 ##### Will return the following data:
 * Venue Name
@@ -18,7 +18,7 @@
 
 # Movie
 
-'node liri.js movie-this [insert movie]'
+`node liri.js movie-this [insert movie]`
 
 ##### Will return the following data:
 * Title
@@ -32,7 +32,7 @@
 
 # Spotify
 
-'node liri.js spotify-this-song [insert song name]'
+`node liri.js spotify-this-song [insert song name]`
 
 ##### Will return the following data:
 * Artist Name
@@ -42,7 +42,7 @@
 
 # Do What It Says
 
-'node liri.js do-what-it-says'
+`node liri.js do-what-it-says`
 
 ##### Will run the following function:
 * spotify-this
