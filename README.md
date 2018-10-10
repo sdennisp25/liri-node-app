@@ -52,7 +52,7 @@
 
 # Images of the LIRI application
 
-### Concert command imagest:
+### Concert command images:
 ***
 ![Alt text](/images/concert1.png)
 ![Alt text](/images/concert2.png)
