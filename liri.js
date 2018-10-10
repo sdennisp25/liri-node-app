@@ -38,7 +38,6 @@ function concertThis(bandToSearch) {
 			console.log("------------------------------------------------------")
 			console.log("Venue Name: ", someData.venue.name);
 			console.log("venue Location: ", someData.venue.city);
-			console.log("Date of Event: ", someData.datetime);
 			console.log("Date of Event: ", moment(someData.datetime).format("MM/DD/YYYY hh:mm A"))
 			console.log("------------------------------------------------------")
 
@@ -60,7 +59,7 @@ function movieThis(movieToSearch) {
 				"Title: " + myMovieData.Title + "\n" +
 				"Year: " + myMovieData.Year + "\n" +
 				"IMBD Rating: " + myMovieData.imdbRating + "\n" +
-				"Rotton Tomatos Rating: " + myMovieData.Ratings[0].Value + "\n" +
+				"Rotten Tomatos Rating: " + myMovieData.Ratings[0].Value + "\n" +
 				"Country Produced: " + myMovieData.Country + "\n" +
 				"Movie Language: " + myMovieData.Language + "\n" +
 				"Plot of Movie: " + myMovieData.Plot + "\n" +
