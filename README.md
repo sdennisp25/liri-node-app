@@ -52,4 +52,19 @@
 
 # Images of the LIRI application
 
+### Concert command imagest:
+***
 ![Alt text](/images/concert1.png)
+![Alt text](/images/concert2.png)
+
+### Movie command images:
+***
+![Alt text](/images/movieAPI.png)
+
+### Spotify command images:
+***
+![Alt text](/images/songAPI.png)
+
+### Do What It Says images: 
+***
+![Alt text](/images/dowhatitsays.png)
