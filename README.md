@@ -48,3 +48,8 @@
 * spotify-this
 * passing through the "I want it that way" argument
 * Will return the spotify data to you
+
+
+# Images of the LIRI application
+
+![Alt text](/images/concert1.png)
